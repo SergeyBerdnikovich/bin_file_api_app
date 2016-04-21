@@ -37,7 +37,7 @@ RSpec.describe BinFileUploader, type: :service do
       context 'when some sample is from future' do
         let(:error_message) { FutureSampleException.new('Error: Future sample is detected!').to_s }
 
-        before { allow(Time).to receive(:now).and_return(Time.parse('2016-04-04 18:55:39').utc) }
+        before { allow(Time).to receive(:now).and_return(Time.at(1_398_085_332).utc) }
 
         it 'returns an error' do
           expect(described_class.upload(encoded_base64_file).to_s).to eq(error_message)
@@ -49,8 +49,8 @@ RSpec.describe BinFileUploader, type: :service do
       end
 
       context 'when nothing to upload' do
-        let!(:sample1) { create(:sample, sensor_id: 37, capture_time: Time.parse('2016-04-04 19:02:39').utc) }
-        let!(:sample2) { create(:sample, sensor_id: 37, capture_time: Time.parse('2016-04-04 18:47:39').utc) }
+        let!(:sample1) { create(:sample, sensor_id: 37, capture_time: Time.at(1_459_785_759).utc) }
+        let!(:sample2) { create(:sample, sensor_id: 37, capture_time: Time.at(1_459_784_859).utc) }
 
         it 'returns an error' do
           expect(described_class.upload(encoded_base64_file).to_s).to eq(BinFileUploader::FAIL_STATUS)
@@ -58,7 +58,7 @@ RSpec.describe BinFileUploader, type: :service do
       end
 
       context 'when some samples already exist' do
-        let!(:sample) { create(:sample, sensor_id: 37, capture_time: Time.parse('2016-04-04 19:02:39').utc) }
+        let!(:sample) { create(:sample, sensor_id: 37, capture_time: Time.at(1_459_785_759).utc) }
 
         it 'stores only new samples' do
           expect { described_class.upload(encoded_base64_file) }.to change { Sample.count }.from(1).to(2)

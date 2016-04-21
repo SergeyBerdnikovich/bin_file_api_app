@@ -8,14 +8,14 @@ RSpec.describe SamplesController, type: :controller do
                       light: 44_223,
                       soil_moisture: 374,
                       air_temperature: 774,
-                      capture_time: Time.parse('2016-04-04 19:02:39').utc)
+                      capture_time: Time.at(1_459_785_759).utc)
     end
     let!(:sample2) do
       create(:sample, sensor_id: 37,
                       light: 41_752,
                       soil_moisture: 376,
                       air_temperature: 775,
-                      capture_time: Time.parse('2016-04-04 18:47:39').utc)
+                      capture_time: Time.at(1_459_784_859).utc)
     end
     let(:samples) { SamplePresenter.present([sample2, sample1]) }
 
@@ -46,14 +46,14 @@ RSpec.describe SamplesController, type: :controller do
       end
 
       it 'fetches samples by sensor_id and start_time' do
-        get 'fetch', params: { sensor_id: sample1.sensor_id, start_time: '2016-04-04 18:55:39' }
+        get 'fetch', params: { sensor_id: sample1.sensor_id, start_time: Time.at(1_459_785_000).utc }
 
         expect(response).to have_http_status(200)
         expect(response.body).to eq(SamplePresenter.present(sample1).to_json)
       end
 
       it 'fetches samples by sensor_id and end_time' do
-        get 'fetch', params: { sensor_id: sample1.sensor_id, end_time: '2016-04-04 18:55:39' }
+        get 'fetch', params: { sensor_id: sample1.sensor_id, end_time: Time.at(1_459_785_000).utc }
 
         expect(response).to have_http_status(200)
         expect(response.body).to eq(SamplePresenter.present(sample2).to_json)
@@ -61,8 +61,8 @@ RSpec.describe SamplesController, type: :controller do
 
       it 'fetches samples by sensor_id, start_time and end_time' do
         get 'fetch', params: { sensor_id: sample1.sensor_id,
-                               start_time: '2016-04-04 18:55:39',
-                               end_time: '2016-04-04 20:55:39' }
+                               start_time: Time.at(1_459_785_000).utc,
+                               end_time: Time.at(1_459_888_759).utc }
 
         expect(response).to have_http_status(200)
         expect(response.body).to eq(SamplePresenter.present(sample1).to_json)
@@ -104,7 +104,7 @@ RSpec.describe SamplesController, type: :controller do
       end
 
       context 'when some samples are exists' do
-        let!(:sample1) { create(:sample, sensor_id: 37, capture_time: Time.parse('2016-04-04 19:02:39').utc) }
+        let!(:sample1) { create(:sample, sensor_id: 37, capture_time: Time.at(1_459_785_759).utc) }
 
         it 'uploads only new samples' do
           post 'upload', params: { buffer: encoded_base64_file }
@@ -117,7 +117,7 @@ RSpec.describe SamplesController, type: :controller do
 
       context 'when some samples are from the future' do
         let(:error_message) { FutureSampleException.new('Error: Future sample is detected!').to_json }
-        before { allow(Time).to receive(:now).and_return(Time.parse('2016-04-04 18:55:39').utc) }
+        before { allow(Time).to receive(:now).and_return(Time.at(1_398_085_332).utc) }
 
         it 'rejects all samples which were tried to be uploaded' do
           post 'upload', params: { buffer: encoded_base64_file }

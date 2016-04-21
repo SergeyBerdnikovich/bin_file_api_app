@@ -26,14 +26,14 @@ RSpec.describe BinFileDecoder, type: :decoder do
               light: 44_223,
               soil_moisture: 374,
               air_temperature: 774,
-              capture_time: Time.parse('2016-04-04 19:02:39').utc
+              capture_time: Time.at(1_459_785_759).utc
             },
             {
               sensor_id: 37,
               light: 41_752,
               soil_moisture: 376,
               air_temperature: 775,
-              capture_time: Time.parse('2016-04-04 18:47:39').utc
+              capture_time: Time.at(1_459_784_859).utc
             }
           ]
         end
@@ -45,7 +45,7 @@ RSpec.describe BinFileDecoder, type: :decoder do
 
       context 'and with &block' do
         it 'returns an array of results of block invoking' do
-          expect(described_class.decode(encoded_file){ |attributes| attributes[:sensor_id] }).to eq([37, 37])
+          expect(described_class.decode(encoded_file) { |attributes| attributes[:sensor_id] }).to eq([37, 37])
         end
       end
     end

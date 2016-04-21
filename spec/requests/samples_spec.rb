@@ -9,14 +9,14 @@ RSpec.describe 'Samples API', type: :request do
                      light: 44_223,
                      soil_moisture: 374,
                      air_temperature: 774,
-                     capture_time: Time.parse('2016-04-04 19:02:39').utc)
+                     capture_time: Time.at(1_459_785_759).utc)
     end
     let(:sample2) do
       build(:sample, sensor_id: 37,
                      light: 41_752,
                      soil_moisture: 376,
                      air_temperature: 775,
-                     capture_time: Time.parse('2016-04-04 18:47:39').utc)
+                     capture_time: Time.at(1_459_784_859).utc)
     end
 
     before { allow_any_instance_of(BinFileDecoder).to receive(:samples_count).and_return(2) }
